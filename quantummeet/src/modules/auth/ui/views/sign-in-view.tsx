@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
+import { FaGithub, FaGoogle } from "react-icons/fa";
 import { z } from "zod";
 import { authClient } from "@/lib/auth-cliennt";
 import { useForm } from "react-hook-form";
@@ -55,6 +56,22 @@ export const SignInView = () => {
         ).finally(() => setLoading(false));
     };
 
+    const onSocial = (provider: "github" | "google") => {
+        setError(null);
+        setLoading(true);
+
+        authClient.signIn.social(
+            {
+                provider: provider,
+                callbackURL: "/",
+            },
+            {
+                onSuccess: () => router.push("/"),
+                onError: (error: any) => setError(error.error.message),
+            }
+        ).finally(() => setLoading(false));
+    };
+
     return (
         <div className="flex flex-col gap-6">
             <Card className="overflow-hidden p-0">
@@ -64,7 +81,7 @@ export const SignInView = () => {
                         <form onSubmit={form.handleSubmit(onSubmit)} className="p-6 md:p-8">
                             <div className="flex flex-col gap-6">
                                 <div className="text-center">
-                                    <h1 className="text-2xl font-bold">Welcome Back</h1>
+                                    <h1 className="text-2xl font-bold text-blue-700">Welcome Back</h1>
                                     <p className="text-muted-foreground">Login to your account</p>
                                 </div>
 
@@ -127,11 +144,25 @@ export const SignInView = () => {
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-4">
-                                    <Button variant="outline" type="button" className="w-full">
-                                        Google
+                                    <Button
+                                        disabled={loading}
+                                        onClick={() => onSocial("google")}
+                                        variant="outline"
+                                        type="button"
+                                        className="w-full">
+                                        <div className="text-blue-700">
+                                            <FaGoogle />
+                                        </div>
                                     </Button>
-                                    <Button variant="outline" type="button" className="w-full">
-                                        GitHub
+                                    <Button
+                                        disabled={loading}
+                                        onClick={() => onSocial("github")}
+                                        variant="outline"
+                                        type="button"
+                                        className="w-full">
+                                        <div className="text-blue-700">
+                                            <FaGithub />
+                                        </div>
                                     </Button>
                                 </div>
 
@@ -153,7 +184,7 @@ export const SignInView = () => {
                         <img
                             src="/logo.png"
                             alt="Quantum Meet Logo"
-                            className="w-60 h-60 mb-2"
+                            className="w-50 h-50 mb-2"
                         />
                         <p className="text-2xl font-semibold text-white mt-[-10px]">
                             Quantum Meet

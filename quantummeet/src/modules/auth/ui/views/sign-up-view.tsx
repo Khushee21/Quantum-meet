@@ -15,6 +15,7 @@ import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { z } from "zod";
 import { authClient } from "@/lib/auth-cliennt";
+import { FaGithub, FaGoogle } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { OctagonAlertIcon } from "lucide-react";
@@ -57,12 +58,30 @@ export const SignUpView = () => {
                 name: data.name,
                 email: data.email,
                 password: data.password,
+                callbackURL: "/",
             },
             {
                 onSuccess: () => router.push("/"),
                 onError: (error: any) => setError(error.error.message),
             }
         ).finally(() => setLoading(false));
+    };
+
+    const onSocial = (provider: "github" | "google") => {
+        setError(null);
+        setLoading(true);
+
+        const result = authClient.signIn.social(
+            {
+                provider: provider,
+                callbackURL: "/",
+            },
+            {
+                onSuccess: () => router.push("/"),
+                onError: (error: any) => setError(error.error.message),
+            }
+        ).finally(() => setLoading(false));
+        console.log("Social login result:", result);
     };
 
     return (
@@ -74,7 +93,7 @@ export const SignUpView = () => {
                         <form onSubmit={form.handleSubmit(onSubmit)} className="p-6 md:p-8">
                             <div className="flex flex-col gap-6">
                                 <div className="text-center">
-                                    <h1 className="text-2xl font-bold">Let's get started</h1>
+                                    <h1 className="text-2xl font-bold text-blue-700">Let's get started</h1>
                                     <p className="text-muted-foreground">Create your account</p>
                                 </div>
                                 <div className="grid gap-3">
@@ -170,11 +189,24 @@ export const SignUpView = () => {
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-4">
-                                    <Button variant="outline" type="button" className="w-full">
-                                        Google
+                                    <Button disabled={loading}
+                                        onClick={() => onSocial("google")}
+                                        variant="outline"
+                                        type="button"
+                                        className="w-full">
+                                        <div className="text-blue-700 ">
+                                            <FaGoogle />
+                                        </div>
                                     </Button>
-                                    <Button variant="outline" type="button" className="w-full">
-                                        GitHub
+                                    <Button
+                                        disabled={loading}
+                                        onClick={() => onSocial("github")}
+                                        variant="outline"
+                                        type="button"
+                                        className="w-full">
+                                        <div className="text-blue-700 ">
+                                            <FaGithub />
+                                        </div>
                                     </Button>
                                 </div>
 
@@ -196,7 +228,7 @@ export const SignUpView = () => {
                         <img
                             src="/logo.png"
                             alt="Quantum Meet Logo"
-                            className="w-60 h-60 mb-2"
+                            className="w-50 h-50 mb-2"
                         />
                         <p className="text-2xl font-semibold text-white mt-[-10px]">
                             Quantum Meet

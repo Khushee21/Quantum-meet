@@ -22,9 +22,16 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const formSchema = z.object({
+    name: z.string().min(1, { message: 'Name is required' }),
     email: z.string().email(),
-    password: z.string().min(1),
-});
+    password: z.string().min(1, { message: 'Password is required' }),
+    confirmPassword: z.string().min(1, { message: 'Password is required' }),
+
+})
+    .refine((data) => data.password === data.confirmPassword, {
+        message: "Password's don't match",
+        path: ["confirmPassword"],
+    });
 
 export const SignUpView = () => {
     const router = useRouter();
@@ -34,8 +41,10 @@ export const SignUpView = () => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
+            name: "",
             email: "",
             password: "",
+            confirmPassword: "",
         },
     });
 
@@ -43,8 +52,9 @@ export const SignUpView = () => {
         setError(null);
         setLoading(true);
 
-        authClient.signIn.email(
+        authClient.signUp.email(
             {
+                name: data.name,
                 email: data.email,
                 password: data.password,
             },
@@ -64,11 +74,27 @@ export const SignUpView = () => {
                         <form onSubmit={form.handleSubmit(onSubmit)} className="p-6 md:p-8">
                             <div className="flex flex-col gap-6">
                                 <div className="text-center">
-                                    <h1 className="text-2xl font-bold">Welcome Back</h1>
-                                    <p className="text-muted-foreground">Login to your account</p>
+                                    <h1 className="text-2xl font-bold">Let's get started</h1>
+                                    <p className="text-muted-foreground">Create your account</p>
                                 </div>
-
                                 <div className="grid gap-3">
+                                    <FormField
+                                        control={form.control}
+                                        name="name"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Name</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="Annie Wom"
+                                                        {...field}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
                                     <FormField
                                         control={form.control}
                                         name="email"
@@ -93,6 +119,23 @@ export const SignUpView = () => {
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Password</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        type="password"
+                                                        placeholder="********"
+                                                        {...field}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="confirmPassword"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Confirm Password</FormLabel>
                                                 <FormControl>
                                                     <Input
                                                         type="password"
@@ -136,12 +179,12 @@ export const SignUpView = () => {
                                 </div>
 
                                 <div className="text-center text-sm">
-                                    Don't have an account?{" "}
+                                    Already have an account?{" "}
                                     <Link
-                                        href="/sign-up"
+                                        href="/sign-in"
                                         className="underline underline-offset-4"
                                     >
-                                        Sign Up
+                                        Sign In
                                     </Link>
                                 </div>
                             </div>

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-cliennt";
 import { SessionData } from "@/types/AllTypes";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 const HomeView = () => {
     const [session, setSession] = useState<SessionData | null>(null);

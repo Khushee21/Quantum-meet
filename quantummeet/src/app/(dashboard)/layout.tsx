@@ -1,5 +1,6 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { DashBoardSidebar } from "@/modules/dashboard/ui/components/dashboard-sidebar";
+import { DashboardNavbar } from "@/modules/dashboard/ui/components/dashboard-navbar";
 DashBoardSidebar
 interface Props {
     children: React.ReactNode;
@@ -7,13 +8,19 @@ interface Props {
 
 const layout = ({ children }: Props) => {
     return (
-        <SidebarProvider >
-            <DashBoardSidebar />
-            <main className="flex flex-col h-screen">
-                {children}
-            </main>
+        <SidebarProvider>
+            <div className="flex h-screen w-full">
+                <DashBoardSidebar />
+                <main className="flex flex-col w-full">
+                    <DashboardNavbar />
+                    <div className="flex-1 overflow-y-auto">
+                        {children}
+                    </div>
+                </main>
+            </div>
         </SidebarProvider>
     );
 };
+
 
 export default layout;

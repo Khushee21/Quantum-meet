@@ -70,8 +70,8 @@
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
   /* sidebar */
-  --sidebar: oklch(47.047% 0.21386 264.162 / 0.933);
-  --sidebar-foreground: oklch(92.362% 0.00999 181.995);
+  --sidebar: oklch(31.317% 0.20471 267.86 / 0.933);
+  --sidebar-foreground: oklch(81.184% 0.08556 214.979);
   --sidebar-primary: oklch(0.205 0 0);
   --sidebar-primary-foreground: oklch(0.985 0 0);
   /* sidebar bg */

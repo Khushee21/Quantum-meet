@@ -19,6 +19,8 @@ export function AvatarImage({
     alt,
     ...props
 }: React.ImgHTMLAttributes<HTMLImageElement>) {
+
+    if (!src) return null;
     return (
         <img
             className={cn("aspect-square h-full w-full", className)}

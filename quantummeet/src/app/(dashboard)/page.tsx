@@ -17,9 +17,6 @@ const Page = async () => {
   }
 
   return (
-    <p>{greeting.greeting}</p>
-  )
-  return (
     <HomeView />
   )
 }

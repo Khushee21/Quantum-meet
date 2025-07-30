@@ -24,8 +24,6 @@ import {
     DrawerContent,
     DrawerHeader,
     DrawerTitle,
-    DrawerFooter,
-    DrawerClose,
 } from "@/components/ui/drawer";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";

@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/drawer";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
-import { GeneratedAvatar } from "@/components/generated-avatar";
+import { GeneratedAvatar } from "@/components/generate-avatar";
 
 export const DashboardUserButton = () => {
     const [session, setSession] = useState<SessionData | null>(null);

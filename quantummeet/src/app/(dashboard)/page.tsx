@@ -6,7 +6,6 @@ import { caller } from "@/trpc/server";
 
 const Page = async () => {
 
-  const greeting = await caller.hello({ text: "Antonio Server" });
 
   const session = await auth.api.getSession({
     headers: await headers(),

@@ -3,7 +3,7 @@
 import { createAvatar } from "@dicebear/core";
 import { botttsNeutral, initials } from "@dicebear/collection";
 import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "../lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 interface GeneratedAvatarProps {

@@ -1,4 +1,5 @@
 import { ResponsiveDialog } from "@/components/responsive-dailog";
+import { AgentForm } from "./agents-form";
 
 interface NewAgentDailogProps {
     open: boolean;
@@ -12,7 +13,9 @@ export const NewAgentDailog = ({ open, onOpenChange }: NewAgentDailogProps) => {
             description="Create a new agent"
             open={open}
             onOpenChange={onOpenChange}>
-            new Agent form
+            <AgentForm
+                onSuccess={() => onOpenChange(false)}
+                onCancel={() => onOpenChange(false)} />
         </ResponsiveDialog>
     )
 }

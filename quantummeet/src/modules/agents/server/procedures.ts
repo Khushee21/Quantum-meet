@@ -4,12 +4,15 @@ import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 import { agentsInsertSchema } from "../ui/schema";
 import { z } from "zod";
-import { eq } from "drizzle-orm";
+import { eq, getTableColumns, sql } from "drizzle-orm";
 
 export const agentsRouter = createTRPCRouter({
     getMany: protectedProcedure.query(async () => {
         const data = await db
-            .select()
+            .select({
+                meetingCount: sql<number>`5`,
+                ...getTableColumns(agents),
+            })
             .from(agents);
 
         await new Promise((resolve) => setTimeout(resolve, 3000));

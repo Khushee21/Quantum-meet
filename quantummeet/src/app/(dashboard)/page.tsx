@@ -16,7 +16,10 @@ const Page = async () => {
   }
 
   return (
-    <HomeView />
+    <div className="bg-blue-50">
+      <HomeView />
+    </div>
+
   )
 }
 

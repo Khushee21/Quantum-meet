@@ -22,7 +22,7 @@ const Page = async () => {
     const queryClient = getQueryClient();
 
     // Prefetch data for hydration
-    await queryClient.prefetchQuery(trpc.agents.getMany.queryOptions());
+    await queryClient.prefetchQuery(trpc.agents.getMany.queryOptions({}));
 
     return (
         <>

@@ -5,6 +5,7 @@ import { NewAgentDailog } from "./new-agent-dailog";
 import { useState } from "react";
 import { useAgentsFilter } from "../../hooks/use-agents-filters";
 import { AgentSearchFilter } from "./agent-seacrh-filter";
+import { DEFAULT_PAGE } from "@/constant";
 const ListHeader = () => {
 
     const [filters, setFilters] = useAgentsFilter();
@@ -15,7 +16,7 @@ const ListHeader = () => {
     const onClearFilter = () => {
         setFilters({
             search: " ",
-            page: 10,
+            page: DEFAULT_PAGE,
         })
     }
 

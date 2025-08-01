@@ -7,11 +7,12 @@ import { DataTable } from "@/components/data-component";
 import { columns } from "../components/columns";
 import { EmptyState } from "@/components/empty-state";
 import { useAgentsFilter } from "../../hooks/use-agents-filters";
+import { DataPagination } from "../components/data-pagination";
 
 
 export const AgentsView = () => {
 
-    const [filters] = useAgentsFilter();
+    const [filters, setFilters] = useAgentsFilter();
     const trpc = useTRPC();
     const { data } = useSuspenseQuery(trpc.agents.getMany.queryOptions({
         ...filters
@@ -23,6 +24,10 @@ export const AgentsView = () => {
             <DataTable
                 data={data.items}
                 columns={columns} />
+            <DataPagination
+                page={filters.page}
+                totalPages={data.totalPages}
+                onPageChange={(page) => setFilters({ page })} />
             {data.items.length === 0 && (
                 <EmptyState
                     title="Create your first agent"

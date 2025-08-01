@@ -2,12 +2,55 @@ import { db } from "@/db";
 import { agents } from "@/db/schema";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
-import { agentsInsertSchema } from "../ui/schema";
+import { agentsInsertSchema, agentsUpdateSchema } from "../ui/schema";
 import { z } from "zod";
 import { eq, getTableColumns, sql, and, ilike, desc, count } from "drizzle-orm";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, MIN_PAGE_SIZE } from "@/constant";
 
 export const agentsRouter = createTRPCRouter({
+
+    //update agent
+    update: protectedProcedure
+        .input(agentsUpdateSchema)
+        .mutation(async ({ ctx, input }) => {
+            const [updateAgent] = await db.
+                update(agents)
+                .set(input)
+                .where(
+                    and(
+                        eq(agents.id, input.id),
+                        eq(agents.userId, ctx.auth.user.id),
+                    ),
+                )
+                .returning();
+
+            if (!updateAgent) {
+                throw new TRPCError({ code: "NOT_FOUND", message: "Agent not found" })
+            }
+            return updateAgent;
+        }),
+
+
+    //remove agent
+    remove: protectedProcedure
+        .input(z.object({ id: z.string() }))
+        .mutation(async ({ ctx, input }) => {
+            const [removeAgnet] = await db
+                .delete(agents)
+                .where(
+                    and(
+                        eq(agents.id, input.id),
+                        eq(agents.userId, ctx.auth.user.id),
+                    ),
+                ).returning();
+
+            if (!removeAgnet) {
+                throw new TRPCError({ code: "NOT_FOUND", message: "Agent not found" })
+            }
+            return removeAgnet;
+        }),
+
+    //get all agents
     getMany: protectedProcedure.input(z.object({
         page: z.number().default(DEFAULT_PAGE),
         pageSize: z.number().min(MIN_PAGE_SIZE).max(MAX_PAGE_SIZE).default(DEFAULT_PAGE_SIZE),
@@ -49,6 +92,7 @@ export const agentsRouter = createTRPCRouter({
             };
         }),
 
+    //get one agents
     getOne: protectedProcedure
         .input(z.object({ id: z.string() }))
         .query(async ({ input, ctx }) => {
@@ -75,6 +119,7 @@ export const agentsRouter = createTRPCRouter({
             return existingAgent;
         }),
 
+    //create new agents
     create: protectedProcedure
         .input(agentsInsertSchema)
         .mutation(async ({ input, ctx }) => {

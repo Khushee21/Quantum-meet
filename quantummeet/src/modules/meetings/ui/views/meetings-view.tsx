@@ -1,33 +1,41 @@
-"use client"
+"use client";
 
-import { useTRPC } from "@/trpc/client"
+import { useTRPC } from "@/trpc/client";
 import { useQuery } from "@tanstack/react-query";
 import { LoadingState } from "@/components/loading-state";
 import { ErrorState } from "@/components/error-state";
+import { DataTable } from "@/components/data-table";
+import { columns } from "../components/columns";
 
 export const MeetingView = () => {
-
     const trpc = useTRPC();
-    const { data } = useQuery(trpc.meetings.getMany.queryOptions({}));
+    const { data, isLoading, isError } = useQuery(trpc.meetings.getMany.queryOptions({}));
+
+    if (isLoading) return <MeetingViewLoading />;
+    if (isError || !data) return <MeetingViewError />;
+
     return (
-        <div>
-            {JSON.stringify(data)}
+        <div className="overflow-x-scroll">
+            <DataTable
+                data={data?.items ?? []}
+                columns={columns}
+            />
         </div>
-    )
-}
+    );
+};
 
 export const MeetingViewLoading = () => {
     return (
         <LoadingState
             title="Loading Meetings"
-            description="This may take a few seconds.." />
-    )
-}
+            description="This may take a few seconds..." />
+    );
+};
 
 export const MeetingViewError = () => {
     return (
         <ErrorState
-            title="Error Loading Meeting"
-            description="Something went wrong.." />
-    )
-}
+            title="Error Loading Meetings"
+            description="Something went wrong..." />
+    );
+};

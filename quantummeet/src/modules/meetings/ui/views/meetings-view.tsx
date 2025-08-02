@@ -6,6 +6,7 @@ import { LoadingState } from "@/components/loading-state";
 import { ErrorState } from "@/components/error-state";
 import { DataTable } from "@/components/data-table";
 import { columns } from "../components/columns";
+import { EmptyState } from "@/components/empty-state";
 
 export const MeetingView = () => {
     const trpc = useTRPC();
@@ -20,6 +21,11 @@ export const MeetingView = () => {
                 data={data?.items ?? []}
                 columns={columns}
             />
+            {data.items.length === 0 && (
+                <EmptyState
+                    title="Create your first meeting"
+                    description="Schedule a meeting to connect with others , each meeting lets you collabrate , share ideas , and interact with participants in real time" />
+            )}
         </div>
     );
 };

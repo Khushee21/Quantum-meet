@@ -7,7 +7,7 @@ import { DataTable } from "@/components/data-table";
 import { columns } from "../components/columns";
 import { EmptyState } from "@/components/empty-state";
 import { useAgentsFilter } from "../../hooks/use-agents-filters";
-import { DataPagination } from "../components/data-pagination";
+import { DataPagination } from "@/components/data-pagination";
 import { useRouter } from "next/navigation";
 import { ErrorState } from "@/components/error-state";
 

@@ -21,18 +21,23 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { OctagonAlertIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Image from "next/image";
+
+type AuthError = {
+    error: {
+        message: string;
+    };
+};
 
 const formSchema = z.object({
     name: z.string().min(1, { message: 'Name is required' }),
     email: z.string().email(),
     password: z.string().min(1, { message: 'Password is required' }),
     confirmPassword: z.string().min(1, { message: 'Password is required' }),
-
-})
-    .refine((data) => data.password === data.confirmPassword, {
-        message: "Password's don't match",
-        path: ["confirmPassword"],
-    });
+}).refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+});
 
 export const SignUpView = () => {
     const router = useRouter();
@@ -62,7 +67,7 @@ export const SignUpView = () => {
             },
             {
                 onSuccess: () => router.push("/"),
-                onError: (error: any) => setError(error.error.message),
+                onError: (error: AuthError) => setError(error.error.message),
             }
         ).finally(() => setLoading(false));
     };
@@ -71,17 +76,16 @@ export const SignUpView = () => {
         setError(null);
         setLoading(true);
 
-        const result = authClient.signIn.social(
+        authClient.signIn.social(
             {
                 provider: provider,
                 callbackURL: "/",
             },
             {
                 onSuccess: () => router.push("/"),
-                onError: (error: any) => setError(error.error.message),
+                onError: (error: AuthError) => setError(error.error.message),
             }
         ).finally(() => setLoading(false));
-        console.log("Social login result:", result);
     };
 
     return (
@@ -93,9 +97,10 @@ export const SignUpView = () => {
                         <form onSubmit={form.handleSubmit(onSubmit)} className="p-6 md:p-8">
                             <div className="flex flex-col gap-6">
                                 <div className="text-center">
-                                    <h1 className="text-2xl font-bold text-blue-700">Let's get started</h1>
+                                    <h1 className="text-2xl font-bold text-blue-700">Let&apos;s get started</h1>
                                     <p className="text-muted-foreground">Create your account</p>
                                 </div>
+
                                 <div className="grid gap-3">
                                     <FormField
                                         control={form.control}
@@ -104,11 +109,7 @@ export const SignUpView = () => {
                                             <FormItem>
                                                 <FormLabel>Name</FormLabel>
                                                 <FormControl>
-                                                    <Input
-                                                        type="text"
-                                                        placeholder="Annie Wom"
-                                                        {...field}
-                                                    />
+                                                    <Input type="text" placeholder="Annie Wom" {...field} />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -121,17 +122,12 @@ export const SignUpView = () => {
                                             <FormItem>
                                                 <FormLabel>Email</FormLabel>
                                                 <FormControl>
-                                                    <Input
-                                                        type="email"
-                                                        placeholder="quantummeet@gmail.com"
-                                                        {...field}
-                                                    />
+                                                    <Input type="email" placeholder="quantummeet@gmail.com" {...field} />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
                                     />
-
                                     <FormField
                                         control={form.control}
                                         name="password"
@@ -139,11 +135,7 @@ export const SignUpView = () => {
                                             <FormItem>
                                                 <FormLabel>Password</FormLabel>
                                                 <FormControl>
-                                                    <Input
-                                                        type="password"
-                                                        placeholder="********"
-                                                        {...field}
-                                                    />
+                                                    <Input type="password" placeholder="********" {...field} />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -156,11 +148,7 @@ export const SignUpView = () => {
                                             <FormItem>
                                                 <FormLabel>Confirm Password</FormLabel>
                                                 <FormControl>
-                                                    <Input
-                                                        type="password"
-                                                        placeholder="********"
-                                                        {...field}
-                                                    />
+                                                    <Input type="password" placeholder="********" {...field} />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -174,10 +162,10 @@ export const SignUpView = () => {
                                         <AlertTitle>{error}</AlertTitle>
                                     </Alert>
                                 )}
+
                                 <Button disabled={loading} type="submit" className="w-full">
                                     {loading ? "Signing in..." : "Sign in"}
                                 </Button>
-
 
                                 <div className="relative text-center text-sm">
                                     <div className="absolute inset-0 flex items-center">
@@ -189,12 +177,14 @@ export const SignUpView = () => {
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-4">
-                                    <Button disabled={loading}
+                                    <Button
+                                        disabled={loading}
                                         onClick={() => onSocial("google")}
                                         variant="outline"
                                         type="button"
-                                        className="w-full">
-                                        <div className="text-blue-700 ">
+                                        className="w-full"
+                                    >
+                                        <div className="text-blue-700">
                                             <FaGoogle />
                                         </div>
                                     </Button>
@@ -203,8 +193,9 @@ export const SignUpView = () => {
                                         onClick={() => onSocial("github")}
                                         variant="outline"
                                         type="button"
-                                        className="w-full">
-                                        <div className="text-blue-700 ">
+                                        className="w-full"
+                                    >
+                                        <div className="text-blue-700">
                                             <FaGithub />
                                         </div>
                                     </Button>
@@ -212,10 +203,7 @@ export const SignUpView = () => {
 
                                 <div className="text-center text-sm">
                                     Already have an account?{" "}
-                                    <Link
-                                        href="/sign-in"
-                                        className="underline underline-offset-4"
-                                    >
+                                    <Link href="/sign-in" className="underline underline-offset-4">
                                         Sign In
                                     </Link>
                                 </div>
@@ -225,10 +213,12 @@ export const SignUpView = () => {
 
                     {/* RIGHT SIDE: LOGO + TEXT */}
                     <div className="bg-blue-800 flex flex-col items-center justify-center text-center p-6">
-                        <img
+                        <Image
                             src="/logo.png"
                             alt="Quantum Meet Logo"
-                            className="w-50 h-50 mb-2"
+                            width={150}
+                            height={150}
+                            className="mb-2"
                         />
                         <p className="text-2xl font-semibold text-white mt-[-10px]">
                             Quantum Meet
@@ -246,7 +236,6 @@ export const SignUpView = () => {
                 <a href="#" className="underline underline-offset-4 hover:text-primary">
                     Privacy Policy
                 </a>
-                .
             </div>
         </div>
     );

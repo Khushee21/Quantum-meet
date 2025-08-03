@@ -7,10 +7,18 @@ import { ErrorState } from "@/components/error-state";
 import { DataTable } from "@/components/data-table";
 import { columns } from "../components/columns";
 import { EmptyState } from "@/components/empty-state";
+import { useRouter } from "next/navigation";
+import { useMeetingsFilter } from "../../hooks/use-meetings-filters";
+import { DataPagination } from "@/components/data-pagination";
 
 export const MeetingView = () => {
     const trpc = useTRPC();
-    const { data, isLoading, isError } = useQuery(trpc.meetings.getMany.queryOptions({}));
+    const router = useRouter();
+    const [filters, setFilters] = useMeetingsFilter();
+
+    const { data, isLoading, isError } = useQuery(trpc.meetings.getMany.queryOptions({
+        ...filters
+    }));
 
     if (isLoading) return <MeetingViewLoading />;
     if (isError || !data) return <MeetingViewError />;
@@ -20,7 +28,14 @@ export const MeetingView = () => {
             <DataTable
                 data={data?.items ?? []}
                 columns={columns}
+                onRowClick={(row) => router
+                    .push(`/meetings/${row.id}`)
+                }
             />
+            <DataPagination
+                page={filters.page}
+                totalPages={data.totalPages}
+                onPageChange={(page) => setFilters({ page })} />
             {data.items.length === 0 && (
                 <EmptyState
                     title="Create your first meeting"

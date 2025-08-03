@@ -21,6 +21,7 @@ import { useState } from "react";
 import { CommonSelect } from "./command-select";
 import { GeneratedAvatar } from "@/components/generate-avatar";
 import { NewAgentDailog } from "@/modules/agents/ui/components/new-agent-dailog";
+import { useMeetingsFilter } from "../../hooks/use-meetings-filters";
 
 interface Props {
     onSuccess?: (id?: string) => void;
@@ -36,6 +37,7 @@ export const MeetingForm = ({
     const trpc = useTRPC();
     const queryClient = useQueryClient();
 
+    const [filters] = useMeetingsFilter();
     const [agentSearch, setAgentSearch] = useState("");
     const [openNewAgentDailog, setOpenNewAgentDailog] = useState(false);
 
@@ -50,7 +52,9 @@ export const MeetingForm = ({
         trpc.meetings.create.mutationOptions({
             onSuccess: async (data) => {
                 await queryClient.invalidateQueries(
-                    trpc.meetings.getMany.queryOptions({})
+                    trpc.meetings.getMany.queryOptions({
+                        ...filters
+                    })
                 );
                 onSuccess?.(data.id);
             },
@@ -64,7 +68,9 @@ export const MeetingForm = ({
         trpc.meetings.update.mutationOptions({
             onSuccess: async () => {
                 await queryClient.invalidateQueries(
-                    trpc.meetings.getMany.queryOptions({})
+                    trpc.meetings.getMany.queryOptions({
+                        ...filters
+                    })
                 );
                 if (initialValue?.id) {
                     await queryClient.invalidateQueries(

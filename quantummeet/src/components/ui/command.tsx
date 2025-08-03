@@ -16,7 +16,6 @@ import { useIsMobile } from "@/hooks/use-mobile"
 
 import {
   Drawer,
-  DrawerTrigger,
   DrawerContent,
   DrawerHeader,
   DrawerFooter,

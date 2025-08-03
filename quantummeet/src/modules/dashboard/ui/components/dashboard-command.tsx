@@ -1,5 +1,4 @@
 import {
-    CommandDialog,
     CommandInput,
     CommandList,
     CommandItem,

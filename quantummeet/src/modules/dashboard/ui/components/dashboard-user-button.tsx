@@ -37,9 +37,12 @@ export const DashboardUserButton = () => {
 
     useEffect(() => {
         const fetchSession = async () => {
-            const result = (await authClient.getSession()) as
+            type AuthResult =
                 | { data: SessionData }
-                | { error: any };
+                | { error: { message: string; code?: string } };
+
+            const result = (await authClient.getSession()) as AuthResult;
+
 
             if ("data" in result) {
                 setSession(result.data);

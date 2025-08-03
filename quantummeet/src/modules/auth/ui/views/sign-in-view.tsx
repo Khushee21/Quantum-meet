@@ -1,5 +1,16 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FaGithub, FaGoogle } from "react-icons/fa";
+import { OctagonAlertIcon } from "lucide-react";
+
+import { authClient } from "@/lib/auth-cliennt";
 import { Card, CardContent } from "@/components/ui/card";
 import {
     Form,
@@ -9,23 +20,16 @@ import {
     FormControl,
     FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertTitle } from "@/components/ui/alert";
-import Link from "next/link";
-import { Input } from "@/components/ui/input";
-import { FaGithub, FaGoogle } from "react-icons/fa";
-import { z } from "zod";
-import { authClient } from "@/lib/auth-cliennt";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { OctagonAlertIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 const formSchema = z.object({
     email: z.string().email(),
     password: z.string().min(1),
 });
+
+type AuthError = { error: { message: string } };
 
 export const SignInView = () => {
     const router = useRouter();
@@ -44,32 +48,36 @@ export const SignInView = () => {
         setError(null);
         setLoading(true);
 
-        authClient.signIn.email(
-            {
-                email: data.email,
-                password: data.password,
-            },
-            {
-                onSuccess: () => router.push("/"),
-                onError: (error: any) => setError(error.error.message),
-            }
-        ).finally(() => setLoading(false));
+        authClient.signIn
+            .email(
+                {
+                    email: data.email,
+                    password: data.password,
+                },
+                {
+                    onSuccess: () => router.push("/"),
+                    onError: (error: AuthError) => setError(error.error.message),
+                }
+            )
+            .finally(() => setLoading(false));
     };
 
     const onSocial = (provider: "github" | "google") => {
         setError(null);
         setLoading(true);
 
-        authClient.signIn.social(
-            {
-                provider: provider,
-                callbackURL: "/",
-            },
-            {
-                onSuccess: () => router.push("/"),
-                onError: (error: any) => setError(error.error.message),
-            }
-        ).finally(() => setLoading(false));
+        authClient.signIn
+            .social(
+                {
+                    provider,
+                    callbackURL: "/",
+                },
+                {
+                    onSuccess: () => router.push("/"),
+                    onError: (error: AuthError) => setError(error.error.message),
+                }
+            )
+            .finally(() => setLoading(false));
     };
 
     return (
@@ -133,7 +141,6 @@ export const SignInView = () => {
                                     {loading ? "Signing in..." : "Sign in"}
                                 </Button>
 
-
                                 <div className="relative text-center text-sm">
                                     <div className="absolute inset-0 flex items-center">
                                         <div className="w-full border-t border-muted" />
@@ -149,7 +156,8 @@ export const SignInView = () => {
                                         onClick={() => onSocial("google")}
                                         variant="outline"
                                         type="button"
-                                        className="w-full">
+                                        className="w-full"
+                                    >
                                         <div className="text-blue-700">
                                             <FaGoogle />
                                         </div>
@@ -159,7 +167,8 @@ export const SignInView = () => {
                                         onClick={() => onSocial("github")}
                                         variant="outline"
                                         type="button"
-                                        className="w-full">
+                                        className="w-full"
+                                    >
                                         <div className="text-blue-700">
                                             <FaGithub />
                                         </div>
@@ -167,7 +176,7 @@ export const SignInView = () => {
                                 </div>
 
                                 <div className="text-center text-sm">
-                                    Don't have an account?{" "}
+                                    Don&apos;t have an account?{" "}
                                     <Link
                                         href="/sign-up"
                                         className="underline underline-offset-4"
@@ -181,10 +190,12 @@ export const SignInView = () => {
 
                     {/* RIGHT SIDE: LOGO + TEXT */}
                     <div className="bg-blue-800 flex flex-col items-center justify-center text-center p-6">
-                        <img
+                        <Image
                             src="/logo.png"
                             alt="Quantum Meet Logo"
-                            className="w-50 h-50 mb-2"
+                            width={200}
+                            height={200}
+                            className="mb-2"
                         />
                         <p className="text-2xl font-semibold text-white mt-[-10px]">
                             Quantum Meet

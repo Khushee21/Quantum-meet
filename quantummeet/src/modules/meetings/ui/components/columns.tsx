@@ -5,7 +5,6 @@ import { MeetingGetMany } from "../../type";
 import { GeneratedAvatar } from "@/components/generate-avatar";
 import {
     CornerDownRightIcon,
-    VideoIcon,
     CircleCheckIcon,
     CircleXIcon,
     ClockArrowUpIcon,
@@ -111,4 +110,3 @@ export const columns: ColumnDef<Meeting>[] = [
         ),
     },
 ];
-','

@@ -5,7 +5,6 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 import {
     Drawer,
-    DrawerTrigger,
     DrawerContent,
     DrawerHeader,
     DrawerFooter,
@@ -16,7 +15,6 @@ import {
 
 import {
     Dialog,
-    DialogTrigger,
     DialogContent,
     DialogHeader,
     DialogFooter,

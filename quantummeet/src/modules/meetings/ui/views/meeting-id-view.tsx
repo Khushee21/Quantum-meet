@@ -26,7 +26,7 @@ export const MeetingIdView = ({ meetingId }: Props) => {
     const queryClient = useQueryClient();
     const router = useRouter();
 
-    const [filters, setFilters] = useMeetingsFilter();
+    const [filters] = useMeetingsFilter();
     const removeMeeting = useMutation(
         trpc.agents.remove.mutationOptions({
             onSuccess: async () => {

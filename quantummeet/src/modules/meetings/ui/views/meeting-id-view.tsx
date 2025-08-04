@@ -10,6 +10,8 @@ import { useConfirm } from "../../hooks/use-confirm";
 import { useMeetingsFilter } from "../../hooks/use-meetings-filters";
 import { UpdateMeetingDailog } from "../components/update-meeting-dailog";
 import { useState } from "react";
+import { EmptyState } from "@/components/empty-state";
+import { ActiveStatus, CancelledState, ProcessingState, UpcomingState } from "../components/status-state";
 
 interface Props {
     meetingId: string;
@@ -55,6 +57,11 @@ export const MeetingIdView = ({ meetingId }: Props) => {
         await removeMeeting.mutateAsync({ id: meetingId });
     }
 
+    const isActive = data.status === "active";
+    const isUpcoming = data.status === "upcoming";
+    const isCanceled = data.status === "cancelled";
+    const isCompleted = data.status === "completed";
+    const isProcessing = data.status === "processing";
 
     return (
         <>
@@ -70,7 +77,15 @@ export const MeetingIdView = ({ meetingId }: Props) => {
                     meetingName={data.name}
                     onEdit={() => { setUpdateMeetingDailog(true) }}
                     onRemove={handleRemoveMethod} />
-                {JSON.stringify(data, null, 2)}
+                {isCanceled && <CancelledState />}
+                {isCompleted && <></>}
+                {isActive && <div>{<ActiveStatus
+                    meetingId={meetingId} />}</div>}
+                {isProcessing && <ProcessingState />}
+                {isUpcoming && <UpcomingState
+                    meetingId={meetingId}
+                    onCancelMeeting={() => { }}
+                    isCancelling={false} />}
             </div>
         </>
     )

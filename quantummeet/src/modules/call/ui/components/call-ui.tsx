@@ -15,12 +15,14 @@ export const CallUI = ({ meetingName }: Props) => {
     const handleJoin = async () => {
         if (!call) return;
         await call.join();
+        console.log("Joined call:", call.id);
         setShow("call");
     };
 
     const handleLeave = async () => {
         if (!call) return;
         call.endCall();
+        console.log("Call ended.");
         setShow("ended");
     };
 

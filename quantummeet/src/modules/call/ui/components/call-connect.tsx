@@ -1,5 +1,12 @@
-"use client"
-import { Call, CallingState, StreamCall, StreamVideo, StreamVideoClient } from "@stream-io/video-react-sdk";
+"use client";
+
+import {
+    Call,
+    CallingState,
+    StreamCall,
+    StreamVideo,
+    StreamVideoClient,
+} from "@stream-io/video-react-sdk";
 import { LoaderIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTRPC } from "@/trpc/client";
@@ -22,12 +29,15 @@ export const CallConnect = ({
     userImage,
     userName,
 }: Props) => {
-
     const trpc = useTRPC();
     const { mutateAsync: generateToken } = useMutation(
         trpc.meetings.generateToken.mutationOptions(),
     );
+
     const [client, setClient] = useState<StreamVideoClient>();
+    const [call, setCall] = useState<Call>();
+
+    // Initialize the Stream client
     useEffect(() => {
         const client = new StreamVideoClient({
             apiKey: process.env.NEXT_PUBLIC_STREAM_VIDEO_API_KEY!,
@@ -37,29 +47,37 @@ export const CallConnect = ({
                 image: userImage,
             },
             tokenProvider: generateToken,
-        })
+        });
 
         setClient(client);
 
         return () => {
             client?.disconnectUser();
             setClient(undefined);
-        }
+        };
     }, [userId, userImage, userName, generateToken]);
 
-    const [call, setCall] = useState<Call>();
-
+    // Join or create the call
     useEffect(() => {
         if (!client) return;
 
-        const _call = client.call("default", meetingId);
-        _call.camera.disable();
-        _call.microphone.disable();
-        setCall(_call);
+        const initCall = async () => {
+            const _call = client.call("default", meetingId);
+
+            // No 'members' argument — just get or create the call
+            await _call.getOrCreate();
+
+            _call.camera.disable();
+            _call.microphone.disable();
+            setCall(_call);
+        };
+
+        initCall();
+
         return () => {
-            if (_call.state.callingState !== CallingState.LEFT) {
-                _call.leave();
-                _call.endCall();
+            if (call && call.state.callingState !== CallingState.LEFT) {
+                call.leave();
+                call.endCall();
                 setCall(undefined);
             }
         };
@@ -79,5 +97,5 @@ export const CallConnect = ({
                 <CallUI meetingName={meetingName} />
             </StreamCall>
         </StreamVideo>
-    )
-}
+    );
+};

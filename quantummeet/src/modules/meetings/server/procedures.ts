@@ -221,3 +221,5 @@ export const meetingsRouter = createTRPCRouter({
             return removeMeeting;
         }),
 });
+
+//http://localhost:8288/runs

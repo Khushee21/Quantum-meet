@@ -10,7 +10,6 @@ import { useConfirm } from "../../hooks/use-confirm";
 import { useMeetingsFilter } from "../../hooks/use-meetings-filters";
 import { UpdateMeetingDailog } from "../components/update-meeting-dailog";
 import { useState } from "react";
-import { EmptyState } from "@/components/empty-state";
 import { ActiveStatus, CancelledState, ProcessingState, UpcomingState } from "../components/status-state";
 
 interface Props {

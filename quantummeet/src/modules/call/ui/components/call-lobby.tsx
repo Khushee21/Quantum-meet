@@ -3,7 +3,6 @@
 import { LogInIcon } from "lucide-react";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-cliennt";
-import { GeneratedAvatar } from "@/components/generate-avatar";
 import "@stream-io/video-react-sdk/dist/css/styles.css";
 import { useState, useEffect } from "react";
 import { SessionData } from "@/types/AllTypes";

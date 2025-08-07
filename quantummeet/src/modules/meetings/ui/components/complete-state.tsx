@@ -13,7 +13,7 @@ import { GeneratedAvatar } from "@/components/generate-avatar";
 import Link from "next/link";
 import format from "date-fns/format";
 import { Badge } from "@/components/ui/badge";
-
+import { formatDuration } from "@/lib/utils";
 
 interface Props {
     data: MeetingGetOne;
@@ -62,44 +62,75 @@ export const CompletedState = ({ data }: Props) => {
                     </ScrollArea>
                 </div>
 
+                {/* Summary Tab */}
                 <TabsContent value="summary">
                     <div className="bg-white rounded-lg border px-6 py-5 mt-4 shadow-sm">
                         <div className="px-4 py-5 gap-y-5 flex flex-col col-span-5">
                             <h2 className="text-lg font-medium capitalize">{data.name}</h2>
                             <div className="flex gap-x-2 items-center">
-                                <Link href={`/agents/${data.agent.id}`}
-                                    className="flex items-center gap-x-2 underline underline-offset-4 capitalize">
+                                <Link
+                                    href={`/agents/${data.agent.id}`}
+                                    className="flex items-center gap-x-2 underline underline-offset-4 capitalize"
+                                >
                                     <GeneratedAvatar
                                         seed={data.agent.name}
                                         variant="botttsNeutral"
                                         className="size-5"
                                     />
                                     {data.agent.name}
-                                </Link>{" "}
+                                </Link>
                                 <p>{data.startedAt ? format(data.startedAt, "PPP") : ""}</p>
                             </div>
+
                             <div className="flex gap-x-2 items-center">
                                 <SparklesIcon className="size-4" />
                                 <p>General summary</p>
                             </div>
-                            <Badge
-                                variant="outline"
-                                className="flex items-center gap--x-2 [&>svg]:size-4">
-                                <ClockFadingIcon />
+
+                            <Badge variant="outline" className="flex items-center gap-x-2 [&>svg]:size-4">
+                                <ClockFadingIcon className="text-blue-700" />
+                                {data.duration ? formatDuration(data.duration) : "No duration"}
                             </Badge>
-                            {/* <p className="text-gray-600">{data.summary || "No summary available."}</p> */}
+
+                            <div>
+                                <Markdown
+                                    components={{
+                                        h1: (props) => (
+                                            <h1 className="text-2xl font-medium mb-6" {...props} />
+                                        ),
+                                        h2: (props) => (
+                                            <h2 className="text-xl font-semibold mb-5" {...props} />
+                                        ),
+                                        h3: (props) => (
+                                            <h3 className="text-lg font-semibold mb-4" {...props} />
+                                        ),
+                                        h4: (props) => (
+                                            <h4 className="text-base font-medium mb-3" {...props} />
+                                        ),
+                                        p: (props) => (
+                                            <p className="mb-6 leading-relaxed" {...props} />
+                                        ),
+                                        ul: (props) => (
+                                            <ul className="list-disc list-inside mb-6" {...props} />
+                                        )
+                                    }}
+                                >
+                                    {data.summary}
+                                </Markdown>
+                            </div>
                         </div>
                     </div>
                 </TabsContent>
 
+                {/* Transcript Tab */}
                 <TabsContent value="transcript">
                     <div className="bg-white rounded-xl border px-6 py-5 mt-4 shadow-sm">
                         <h2 className="text-lg font-semibold mb-2 text-gray-800">Transcript</h2>
-                        {/* Render transcript content here */}
                         <p className="text-gray-500 italic">Transcript data not implemented.</p>
                     </div>
                 </TabsContent>
 
+                {/* Recording Tab */}
                 <TabsContent value="recording">
                     <div className="bg-white rounded-xl border px-6 py-5 mt-4 shadow-sm">
                         <h2 className="text-lg font-semibold mb-2 text-gray-800">Meeting Recording</h2>
@@ -111,6 +142,7 @@ export const CompletedState = ({ data }: Props) => {
                     </div>
                 </TabsContent>
 
+                {/* Ask AI Tab */}
                 <TabsContent value="chat">
                     <div className="bg-white rounded-xl border px-6 py-5 mt-4 shadow-sm">
                         <h2 className="text-lg font-semibold mb-2 text-gray-800">Ask AI</h2>

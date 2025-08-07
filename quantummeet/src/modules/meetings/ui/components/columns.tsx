@@ -12,11 +12,12 @@ import {
     LoaderIcon,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
+import { cn, formatDuration } from "@/lib/utils";
 import { format } from "date-fns";
 import humanizeDuration from "humanize-duration";
 
 type Meeting = MeetingGetMany[number];
+
 
 const statusIconMap = {
     upcoming: ClockArrowUpIcon,
@@ -70,22 +71,17 @@ export const columns: ColumnDef<Meeting>[] = [
         accessorKey: "status",
         header: "Status",
         cell: ({ row }) => {
-            const status = row.original.status as keyof typeof statusIconMap;
-            const Icon = statusIconMap[status];
+            // const status = row.original.status as keyof typeof statusIconMap;
+            // const Icon = statusIconMap[status];
             return (
                 <Badge
                     variant="outline"
-                    className={cn(
-                        "capitalize flex items-center gap-x-2 [&>svg]:size-4 text-muted-foreground",
-                        statusColorMap[status]
-                    )}
+                    className="capitalize [&]:size-4 flex items-center gap-x-2"
                 >
-                    <Icon
-                        className={cn(
-                            row.original.status === "processing" && "animate-spin"
-                        )}
+                    <ClockFadingIcon
+                        className="text-blue-700"
                     />
-                    {status}
+                    {row.original.duration ? formatDuration(row.original.duration) : "No duration"}
                 </Badge>
             );
         },

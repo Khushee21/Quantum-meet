@@ -11,6 +11,7 @@ import { useMeetingsFilter } from "../../hooks/use-meetings-filters";
 import { UpdateMeetingDailog } from "../components/update-meeting-dailog";
 import { useState } from "react";
 import { ActiveStatus, CancelledState, ProcessingState, UpcomingState } from "../components/status-state";
+import { CompletedState } from "../components/complete-state";
 
 interface Props {
     meetingId: string;
@@ -77,7 +78,7 @@ export const MeetingIdView = ({ meetingId }: Props) => {
                     onEdit={() => { setUpdateMeetingDailog(true) }}
                     onRemove={handleRemoveMethod} />
                 {isCanceled && <CancelledState />}
-                {isCompleted && <></>}
+                {isCompleted && <CompletedState data={data} />}
                 {isActive && <div>{<ActiveStatus
                     meetingId={meetingId} />}</div>}
                 {isProcessing && <ProcessingState />}

@@ -14,6 +14,8 @@ import Link from "next/link";
 import format from "date-fns/format";
 import { Badge } from "@/components/ui/badge";
 import { formatDuration } from "@/lib/utils";
+import { Transcript } from "./transcript";
+import { ChatProvider } from "./chat-provider";
 
 interface Props {
     data: MeetingGetOne;
@@ -124,10 +126,7 @@ export const CompletedState = ({ data }: Props) => {
 
                 {/* Transcript Tab */}
                 <TabsContent value="transcript">
-                    <div className="bg-white rounded-xl border px-6 py-5 mt-4 shadow-sm">
-                        <h2 className="text-lg font-semibold mb-2 text-gray-800">Transcript</h2>
-                        <p className="text-gray-500 italic">Transcript data not implemented.</p>
-                    </div>
+                    <Transcript meetingId={data.id} />
                 </TabsContent>
 
                 {/* Recording Tab */}
@@ -144,10 +143,7 @@ export const CompletedState = ({ data }: Props) => {
 
                 {/* Ask AI Tab */}
                 <TabsContent value="chat">
-                    <div className="bg-white rounded-xl border px-6 py-5 mt-4 shadow-sm">
-                        <h2 className="text-lg font-semibold mb-2 text-gray-800">Ask AI</h2>
-                        <p className="text-gray-600">Ask AI feature coming soon...</p>
-                    </div>
+                    <ChatProvider meetingId={data.id} meetingName={data.name} />
                 </TabsContent>
             </Tabs>
         </div>

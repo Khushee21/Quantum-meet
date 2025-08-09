@@ -1,5 +1,6 @@
 import { and, eq, not } from "drizzle-orm";
 import {
+    MessageNewEvent,
     CallEndedEvent,
     CallTranscriptionReadyEvent,
     CallRecordingReadyEvent,
@@ -12,6 +13,13 @@ import { agents, meetings } from "@/db/schema";
 import { stremVideo } from "@/lib/stream-video";
 import { NextRequest, NextResponse } from "next/server";
 import { inngest } from "@/inngest/client";
+import OpenAI from "openai";
+import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
+import { generateAvatarUri } from "@/lib/avatar";
+
+const openaiClient = new OpenAI();
+
+
 
 function verifySignatureWithSDK(body: string, signature: string): boolean {
     return stremVideo.verifyWebhook(body, signature);

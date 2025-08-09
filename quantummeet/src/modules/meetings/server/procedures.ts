@@ -98,7 +98,7 @@ export const meetingsRouter = createTRPCRouter({
                     ...item,
                     user: {
                         name: speaker.name,
-                        image: speaker.image,
+                        // image: speaker.image,
                     },
                 };
             })

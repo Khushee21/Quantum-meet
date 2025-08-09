@@ -56,7 +56,6 @@ export const Transcript = ({ meetingId }: Props) => {
                                         <AvatarImage
                                             alt="User Avatar"
                                             src={
-                                                item?.user?.image ??
                                                 generateAvatarUri({
                                                     seed: item?.user?.name ?? "Unknown",
                                                     variant: "initials",

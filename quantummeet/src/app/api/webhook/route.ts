@@ -16,8 +16,9 @@ import { inngest } from "@/inngest/client";
 import OpenAI from "openai";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { generateAvatarUri } from "@/lib/avatar";
+import { streamChat } from "@/lib/stream-chat";
 
-const openaiClient = new OpenAI();
+const openaiClient = new OpenAI({ apiKey: process.env.OPEN_API_KEY! });
 
 
 
@@ -171,6 +172,100 @@ export async function POST(req: NextRequest) {
             })
             .where(eq(meetings.id, meetingId));
     }
+    else if (eventType === "message.new") {
+        const event = payload as MessageNewEvent;
+        const userId = event.user?.id;
+        const channelId = event.channel_id;
+        const text = event.message?.text;
 
-    return NextResponse.json({ status: "ok" })
+        if (!userId || !channelId || !text) {
+            return NextResponse.json(
+                { error: "Missing request fields" },
+                { status: 400 }
+            );
+        }
+
+        const [existingMeeting] = await db
+            .select()
+            .from(meetings)
+            .where(and(eq(meetings.id, channelId), eq(meetings.status, "completed")));
+
+        if (!existingMeeting) {
+            return NextResponse.json({ error: "Meeting not found" }, { status: 400 });
+        }
+
+        const [existingAgent] = await db
+            .select()
+            .from(agents)
+            .where(eq(agents.id, existingMeeting.agentId));
+
+        if (!existingAgent) {
+            return NextResponse.json({ error: "Agent not found" }, { status: 400 });
+        }
+
+        if (userId !== existingAgent.id) {
+            const instructions = `
+        You are an AI assistant helping the user revisit a recently completed meeting.
+        Below is a summary of the meeting:
+
+        ${existingMeeting.summary}
+
+        Original assistant instructions:
+        ${existingAgent.instructions}
+
+        Keep your answers concise and based on the meeting summary and conversation history.
+        `;
+
+            const channel = streamChat.channel("messaging", channelId);
+            await channel.watch();
+
+            const previousMessages = channel.state.messages
+                .slice(-5)
+                .filter((msg) => msg.text?.trim() !== "")
+                .map<ChatCompletionMessageParam>((message) => ({
+                    role: message.user?.id === existingAgent.id ? "assistant" : "user",
+                    content: message.text || "",
+                }));
+
+            const GPTResponse = await openaiClient.chat.completions.create({
+                model: "gpt-4o",
+                messages: [
+                    { role: "system", content: instructions },
+                    ...previousMessages,
+                    { role: "user", content: text },
+                ],
+            });
+
+            const reply = GPTResponse.choices[0]?.message?.content;
+            if (!reply) {
+                return NextResponse.json(
+                    { error: "No response from GPT" },
+                    { status: 400 }
+                );
+            }
+
+            const avatarUrl = generateAvatarUri({
+                seed: existingAgent.name,
+                variant: "botttsNeutral",
+            });
+
+            await streamChat.upsertUser({
+                id: existingAgent.id,
+                name: existingAgent.name,
+                image: avatarUrl,
+            });
+
+            await channel.sendMessage({
+                text: reply,
+                user: {
+                    id: existingAgent.id,
+                    name: existingAgent.name,
+                    image: avatarUrl
+                }
+            });
+        }
+    }
+
+
+    return NextResponse.json({ status: "ok", })
 }

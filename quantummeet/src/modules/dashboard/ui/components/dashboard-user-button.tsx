@@ -96,7 +96,7 @@ export const DashboardUserButton = () => {
                     <p className="text-sm text-muted-foreground">{user.email}</p>
                 </DrawerHeader>
                 <div className="flex flex-col gap-2 px-4 pb-4">
-                    <Button variant="outline" className="justify-between" onClick={() => alert("Billing")}>
+                    <Button variant="outline" className="justify-between" onClick={() => authClient.customer.portal()}>
                         Billing
                         <CreditCardIcon className="size-4" />
                     </Button>
@@ -133,7 +133,7 @@ export const DashboardUserButton = () => {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                     className="cursor-pointer flex items-center justify-between"
-                    onClick={() => alert("Billing")}
+                    onClick={() => authClient.customer.portal()}
                 >
                     Billing
                     <CreditCardIcon className="size-4" />

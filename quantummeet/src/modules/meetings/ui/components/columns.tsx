@@ -12,13 +12,13 @@ import {
     LoaderIcon,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { cn, formatDuration } from "@/lib/utils";
+import { formatDuration } from "@/lib/utils";
 import { format } from "date-fns";
 import humanizeDuration from "humanize-duration";
 
 type Meeting = MeetingGetMany[number];
 
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const statusIconMap = {
     upcoming: ClockArrowUpIcon,
     active: LoaderIcon,
@@ -27,6 +27,7 @@ const statusIconMap = {
     cancelled: CircleXIcon,
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const statusColorMap = {
     upcoming: "bg-yellow-500/20 text-yellow-800 border-yellow-800/5",
     active: "bg-green-500/20 text-green-800 border-green-800/5",
@@ -71,8 +72,7 @@ export const columns: ColumnDef<Meeting>[] = [
         accessorKey: "status",
         header: "Status",
         cell: ({ row }) => {
-            // const status = row.original.status as keyof typeof statusIconMap;
-            // const Icon = statusIconMap[status];
+
             return (
                 <Badge
                     variant="outline"

@@ -9,7 +9,6 @@ import { meetingsInsertSchema, meetingUpdateSchema } from "../schema";
 import { MeetingStatus } from "../type";
 import { stremVideo } from "@/lib/stream-video";
 import { generateAvatarUri } from "@/lib/avatar";
-import { CopyX } from "lucide-react";
 import { StreamTranscriptItem } from "../type";
 import JSONL from "jsonl-parse-stringify";
 import { streamChat } from "@/lib/stream-chat";

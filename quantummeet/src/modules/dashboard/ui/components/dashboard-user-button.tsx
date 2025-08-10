@@ -80,10 +80,10 @@ export const DashboardUserButton = () => {
             <DrawerTrigger asChild>
                 <Button
                     variant="outline"
-                    className="rounded-lg border border-border/10 p-3 w-full flex items-center justify-between bg-white/5 hover:bg-white/10 overflow-hidden gap-x-2 "
+                    className="rounded-lg border border-border/10 p-3 w-full flex items-center justify-between bg-white/5 hover:bg-white/10 overflow-hidden gap-x-2 py-9 "
                 >
                     {avatar}
-                    <div className="flex flex-col gap-0.5 text-left overflow-hidden flex-1 min-w-0">
+                    <div className="flex flex-col gap-0.5 text-left overflow-hidden flex-1 min-w-0 ">
                         <p className="text-sm truncate w-full">{user.name}</p>
                         <p className="text-xs truncate w-full">{user.email}</p>
                     </div>

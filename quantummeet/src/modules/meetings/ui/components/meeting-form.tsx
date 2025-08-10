@@ -22,6 +22,7 @@ import { CommonSelect } from "./command-select";
 import { GeneratedAvatar } from "@/components/generate-avatar";
 import { NewAgentDailog } from "@/modules/agents/ui/components/new-agent-dailog";
 import { useMeetingsFilter } from "../../hooks/use-meetings-filters";
+import { useRouter } from "next/navigation";
 
 interface Props {
     onSuccess?: (id?: string) => void;
@@ -36,6 +37,7 @@ export const MeetingForm = ({
 }: Props) => {
     const trpc = useTRPC();
     const queryClient = useQueryClient();
+    const router = useRouter();
 
     const [filters] = useMeetingsFilter();
     const [agentSearch, setAgentSearch] = useState("");
@@ -56,10 +58,17 @@ export const MeetingForm = ({
                         ...filters
                     })
                 );
+                await queryClient.invalidateQueries(
+                    trpc.premium.getFreeUsage.queryOptions(),
+                );
                 onSuccess?.(data.id);
             },
             onError: (error) => {
                 toast.error(error.message);
+
+                if (error.data?.code === "FORBIDDEN") {
+                    router.push('/upgrade');
+                }
             },
         })
     );

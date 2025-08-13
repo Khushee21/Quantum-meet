@@ -4,13 +4,10 @@ import { TRPCReactProvider } from "@/trpc/client";
 import { Toaster } from "@/components/ui/sonner";
 import { NuqsAdapter } from "nuqs/adapters/next";
 
-
 const inter = Inter({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
-
-
 
 export default function RootLayout({
   children,
@@ -18,12 +15,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    < NuqsAdapter>
+    <NuqsAdapter>
       <TRPCReactProvider>
         <html lang="en">
-          <body
-            className={`${inter.className} ${inter.variable} antialiased`}
-          >
+          <head>
+            {/* Favicon */}
+            <link rel="icon" href="/favicon.ico" />
+            <title>Quantum Meet</title>
+          </head>
+          <body className={`${inter.className} ${inter.variable} antialiased`}>
             <Toaster />
             {children}
           </body>
